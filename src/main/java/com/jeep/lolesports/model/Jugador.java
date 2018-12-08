@@ -17,6 +17,8 @@ public class Jugador {
     private String nombreInvocador;
     @Column
     private int nivel;
+    @Column
+    private int profileIconId;
 
     @OneToMany(mappedBy = "integrante",
             cascade = CascadeType.ALL)
@@ -40,10 +42,11 @@ public class Jugador {
     private String nombreLigaRankedFlex;
     private int puntosRankedFlex;
 
-    public Jugador(int id, String nombreInvocador, int nivel, int accountId) {
+    public Jugador(int id, String nombreInvocador, int nivel, int profileIconId, int accountId) {
         this.id = id;
         this.nombreInvocador = nombreInvocador;
         this.nivel = nivel;
+        this.profileIconId = profileIconId;
         this.accountId = accountId;
         //Default to unranked
         tipoColaRankedSolo = "UNRANKED";
@@ -63,13 +66,14 @@ public class Jugador {
         puntosRankedFlex = 0;
     }
 
-    public Jugador(int id, String nombreInvocador, int nivel, int accountId, String tipoColaRankedSolo, int victoriasRankedSolo,
+    public Jugador(int id, String nombreInvocador, int nivel, int profileIconId, int accountId, String tipoColaRankedSolo, int victoriasRankedSolo,
                    int derrotasRankedSolo, String nivelRankedSolo, String rangoRankedSolo, String nombreLigaRankedSolo,
                    int puntosRankedSolo, String tipoColaRankedFlex, int victoriasRankedFlex, int derrotasRankedFlex,
                    String nivelRankedFlex, String rangoRankedFlex, String nombreLigaRankedFlex, int puntosRankedFlex) {
         this.id = id;
         this.nombreInvocador = nombreInvocador;
         this.nivel = nivel;
+        this.profileIconId = profileIconId;
         this.accountId = accountId;
         this.tipoColaRankedSolo = tipoColaRankedSolo;
         this.victoriasRankedSolo = victoriasRankedSolo;
@@ -111,6 +115,14 @@ public class Jugador {
 
     public void setNivel(int nivel) {
         this.nivel = nivel;
+    }
+    
+    public int getProfileIconId() {
+    	return profileIconId;
+    }
+    
+    public void setProfileIconId(int profileIconId) {
+    	this.profileIconId = profileIconId;
     }
 
     public List<Partida> getPartidas() {

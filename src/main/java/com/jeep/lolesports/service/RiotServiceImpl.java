@@ -25,12 +25,12 @@ public class RiotServiceImpl implements RiotService {
 
     private static final int END_INDEX_PARTIDAS = 20;
 
-    private static final String SUMMONER_V3_URL = "https://la1.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
-    private static final String LEAGUE_V3_URL = "https://la1.api.riotgames.com/lol/league/v3/positions/by-summoner/";
-    private static final String MATCHLIST_V3_URL = "https://la1.api.riotgames.com/lol/match/v3/matchlists/by-account/";
-    private static final String MATCH_V3_URL = "https://la1.api.riotgames.com/lol/match/v3/matches/";
+    private static final String SUMMONER_V3_URL = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
+    private static final String LEAGUE_V3_URL = "https://na1.api.riotgames.com/lol/league/v3/positions/by-summoner/";
+    private static final String MATCHLIST_V3_URL = "https://na1.api.riotgames.com/lol/match/v3/matchlists/by-account/";
+    private static final String MATCH_V3_URL = "https://na1.api.riotgames.com/lol/match/v3/matches/";
 
-    private static final String STATIC_CHAMPIONS_URL = "http://ddragon.leagueoflegends.com/cdn/6.24.1/data/en_US/champion.json";
+    private static final String STATIC_CHAMPIONS_URL = "http://ddragon.leagueoflegends.com/cdn/8.24.1/data/en_US/champion.json";
     private List<Champion> mChampions;
 
     @Autowired
@@ -50,22 +50,23 @@ public class RiotServiceImpl implements RiotService {
         // Return null if user is not found
         if (jsonDataBasic == null)
             return null;
-
+        
         //Basic info
         JSONObject docBasic = new JSONObject(jsonDataBasic);
         int id = docBasic.getInt("id");
         String nombre = docBasic.getString("name");
         int nivel = docBasic.getInt("summonerLevel");
         int accountId = docBasic.getInt("accountId");
-
+        int profileIconId = docBasic.getInt("profileIconId");
+        
         //Ranked info
         String urlRanked = String.format("%s%s?api_key=%s", LEAGUE_V3_URL, id, API_KEY);
 
         String jsonDataRanked = httpRequest.getRequestContents(urlRanked);
         JSONArray docRanked = new JSONArray(jsonDataRanked);
-
-        Jugador jugador = new Jugador(id, nombre, nivel, accountId);
-
+        System.out.println(docRanked);
+        Jugador jugador = new Jugador(id, nombre, nivel, profileIconId, accountId);
+       
         //Check first league in array
         if (!docRanked.isNull(0)) {
             JSONObject firstLeague = docRanked.getJSONObject(0);
@@ -74,7 +75,10 @@ public class RiotServiceImpl implements RiotService {
             if (tipoColaRanked.equals("RANKED_SOLO_5x5"))
                 setRankedSolo(firstLeague, jugador);
             else
+            {
+            	System.out.println("inside ranked flex");
                 setRankedFlex(firstLeague, jugador);
+            }
         }
 
         //Check second league in array
